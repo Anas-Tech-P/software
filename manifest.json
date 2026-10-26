@@ -1,0 +1,27 @@
+{
+  "id": "./",
+  "name": "Anas Tech Software",
+  "short_name": "Anas Tech",
+  "description": "মাদ্রাসা ও স্কুল ম্যানেজমেন্ট সফটওয়্যার",
+  "lang": "bn",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#0755A5",
+  "background_color": "#FFFFFF",
+  "icons": [
+    {
+      "src": "https://lh3.googleusercontent.com/d/1OmiyuOhFUBWfQUvupjZC5cEZ6zC-sPHY=w192",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://lh3.googleusercontent.com/d/1OmiyuOhFUBWfQUvupjZC5cEZ6zC-sPHY=w512",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
