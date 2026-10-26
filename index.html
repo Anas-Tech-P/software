@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>প্রতিষ্ঠানের ম্যানেজমেন্ট সিস্টেম - Anas Tech</title>
-
-    <!-- PWA: Home Screen install settings -->
+    <title>Anas Tech Software</title>
+    <!-- PWA: Home Screen install settings; original Anas Tech logo -->
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#0755A5" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Anas Tech" />
-    <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1OmiyuOhFUBWfQUvupjZC5cEZ6zC-sPHY=w512" />
  
     <!-- Anas Tech কোম্পানির আসল লোগো ফেভিকন হিসেবে -->
     <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1OmiyuOhFUBWfQUvupjZC5cEZ6zC-sPHY=w1000" />
@@ -217,16 +216,16 @@
         }
     </script>
 
-    <!-- PWA Service Worker: caches no login, student, or financial data -->
+    <!-- PWA Service Worker: does not cache private data or Google Apps Script responses -->
     <script>
-      if ("serviceWorker" in navigator) {
-        window.addEventListener("load", function () {
-          navigator.serviceWorker.register("./sw.js")
-            .catch(function (error) {
-              console.error("Anas Tech PWA service worker registration failed:", error);
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", function () {
+                navigator.serviceWorker.register("./sw.js", { scope: "./" })
+                    .catch(function (error) {
+                        console.error("Anas Tech PWA service worker registration failed:", error);
+                    });
             });
-        });
-      }
+        }
     </script>
 </body>
 </html>
