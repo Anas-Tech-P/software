@@ -8,7 +8,10 @@
     <!-- Anas Tech কোম্পানির আসল লোগো ফেভিকন হিসেবে -->
     <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1OmiyuOhFUBWfQUvupjZC5cEZ6zC-sPHY=w1000" />
     <link rel="preconnect" href="https://script.google.com" crossorigin />
+    <link rel="dns-prefetch" href="https://script.google.com" />
+    <link rel="preconnect" href="https://lh3.googleusercontent.com" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=SolaimanLipi&display=swap" media="print" onload="this.media='all'" />
 
     <style>
@@ -43,10 +46,16 @@
         .switch-inst-btn { position: fixed; top: 10px; right: 10px; z-index: 9999; background: rgba(15, 23, 42, 0.7); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; backdrop-filter: blur(4px); }
         .switch-inst-btn:hover { background: #ef4444; border-color: #ef4444; }
 
-        #bootLoader { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px; z-index: 100000; background: #fff; }
-        #bootLoader .spinner { width: 36px; height: 36px; border: 3px solid #e2e8f0; border-top-color: #0284c7; border-radius: 50%; animation: spin .8s linear infinite; }
-        #bootLoader span { color: #64748b; font-size: 14px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        /* ===== প্রফেশনাল লোডার ===== */
+        #bootLoader { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 14px; z-index: 100000; background: linear-gradient(160deg, #f8fafc 0%, #e0f2fe 100%); transition: opacity .35s ease; }
+        #bootLoader.fade-out { opacity: 0; pointer-events: none; }
+        #bootLoader .boot-logo { width: 84px; height: 84px; border-radius: 50%; object-fit: contain; box-shadow: 0 6px 18px rgba(2,132,199,.25); animation: bootPulse 1.6s ease-in-out infinite; }
+        #bootLoader .boot-title { font-size: 18px; font-weight: 700; color: #0f172a; margin: 0; }
+        #bootLoader .boot-bar { width: 220px; height: 5px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
+        #bootLoader .boot-bar i { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, #0284c7, #38bdf8); border-radius: 99px; transition: width .6s ease; }
+        #bootLoader .boot-text { color: #64748b; font-size: 13px; min-height: 18px; }
+        @keyframes bootPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+        @media (prefers-reduced-motion: reduce) { #bootLoader .boot-logo { animation: none; } }
 
         .main-container { position: fixed; inset: 0; overflow: hidden; display: none; background-color: #0f172a; padding-top: env(safe-area-inset-top, 35px); padding-bottom: env(safe-area-inset-bottom, 20px); }
         iframe { width: 100%; height: 100%; border: none; display: block; background-color: #0f172a; }
@@ -55,8 +64,10 @@
 <body>
 
     <div id="bootLoader">
-        <div class="spinner"></div>
-        <span>লোড হচ্ছে…</span>
+        <img class="boot-logo" src="https://lh3.googleusercontent.com/d/1OmiyuOhFUBWfQUvupjZC5cEZ6zC-sPHY=w300" alt="Anas Tech" />
+        <p class="boot-title">Anas Tech</p>
+        <div class="boot-bar"><i id="bootBarFill"></i></div>
+        <span class="boot-text" id="bootText">প্রস্তুত হচ্ছে…</span>
     </div>
 
     <button class="switch-inst-btn" id="switchBtn" style="display:none;" onclick="logoutAndSwitch()">🔄 Log Out</button>
@@ -114,8 +125,45 @@
             } catch (e) {} 
         }
 
-        function hideBootLoader() { var l = document.getElementById('bootLoader'); if (l) l.style.display = 'none'; }
-        function showBootLoader(text) { var l = document.getElementById('bootLoader'); if (l) { l.querySelector('span').textContent = text || 'লোড হচ্ছে…'; l.style.display = 'flex'; } }
+        /* ---------- প্রফেশনাল লোডার ---------- */
+        var bootTimer = null;
+        var bootSteps = [
+            { p: 25, t: 'সংযোগ স্থাপন হচ্ছে…' },
+            { p: 55, t: 'নিরাপত্তা যাচাই হচ্ছে…' },
+            { p: 80, t: 'ড্যাশবোর্ড প্রস্তুত হচ্ছে…' },
+            { p: 92, t: 'প্রায় শেষ…' }
+        ];
+
+        function setBoot(p, t) {
+            var f = document.getElementById('bootBarFill');
+            var x = document.getElementById('bootText');
+            if (f) f.style.width = p + '%';
+            if (x && t) x.textContent = t;
+        }
+
+        function showBootLoader(text) {
+            var l = document.getElementById('bootLoader');
+            if (!l) return;
+            l.style.display = 'flex';
+            l.classList.remove('fade-out');
+            clearInterval(bootTimer);
+            var i = 0;
+            setBoot(8, text || 'প্রস্তুত হচ্ছে…');
+            bootTimer = setInterval(function () {
+                if (i < bootSteps.length) { setBoot(bootSteps[i].p, bootSteps[i].t); i++; }
+                else { clearInterval(bootTimer); }
+            }, 900);
+        }
+
+        function hideBootLoader() {
+            clearInterval(bootTimer);
+            var l = document.getElementById('bootLoader');
+            if (!l) return;
+            setBoot(100, 'সম্পন্ন!');
+            l.classList.add('fade-out');
+            setTimeout(function () { l.style.display = 'none'; }, 350);
+        }
+
         function showLoginForm() { 
             hideBootLoader(); 
             document.getElementById('switchBtn').style.display = 'none';
@@ -129,7 +177,7 @@
             document.getElementById('loginOverlay').classList.remove('show');
             document.getElementById('switchBtn').style.display = 'block'; 
             var frame = document.getElementById('appIframe');
-            showBootLoader('লোড হচ্ছে…');
+            showBootLoader('সংযোগ হচ্ছে…');
 
             var BASE = GOOGLE_SCRIPT_API + "?inst=" + encodeURIComponent(instId);
 
